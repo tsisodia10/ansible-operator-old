@@ -1,0 +1,7 @@
+apiVersion: app.example.com/v1
+kind: ConfigMap
+metadata:
+  name: example-configmap
+spec:
+  # Add fields here
+  size: 3

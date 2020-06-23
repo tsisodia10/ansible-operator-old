@@ -70,6 +70,8 @@ rules:
   - app.example.com
   resources:
   - '*'
+  - secrets
+  - configmaps
   verbs:
   - create
   - delete
