@@ -26,7 +26,7 @@ fi
 
 # We only support Git repository for project import. If the project type is
 # not specified, we set it to 'local'.
-if [ ! "${PROJECT_TYPE}" ]; then
+if [ -z "${PROJECT_TYPE}" ]; then
     echo "WARNING - PROJECT_TYPE not specified. Defaulting to 'local'."
     PROJECT_TYPE="local"
 fi
