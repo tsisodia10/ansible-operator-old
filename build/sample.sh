@@ -7,7 +7,7 @@
 # that doesn't exist in /etc/passwd, but Ansible module utils
 # require a named user. So if we're in OpenShift, we need to make
 # one before Ansible runs.
-if [ `id -u` -ge 500 ] || [ -z "${CURRENT_UID}" ]; then
+if [ `id -u` -ge 500 ] || [ -z "${CURRENT_UID}" ] ; then
 
   cat << EOF > /tmp/passwd
 root:x:0:0:root:/root:/bin/bash
@@ -26,7 +26,7 @@ fi
 
 # We only support Git repository for project import. If the project type is
 # not specified, we set it to 'local'.
-if [ -z "${PROJECT_TYPE}" ]; then
+if [ -z "${PROJECT_TYPE}" ] ; then
     echo "WARNING - PROJECT_TYPE not specified. Defaulting to 'local'."
     PROJECT_TYPE="local"
 fi
@@ -47,12 +47,12 @@ done
 env | grep '^ENVVAR_' | while read ENV ; do
     ENV_KEY=$(echo "$ENV" | awk -F '=' '{ print $1; }' | sed 's/^ENVVAR_//')
     ENV_VALUE=$(echo "$EV" | awk -F '=' '{ print $2; }')
-    echo "${ENV_KEY}: ${ENV_VALUE}" >> /runner/env/extravars
+    echo "${ENV_KEY}: ${ENV_VALUE}" >> /runner/env/envvars
 done
 
 # Check if the inventory file is present. If not, we create an empty inventory
 # with only localhost
-if [! -f /runner/inventory/hosts ]; then
+if [! -f /runner/inventory/hosts ] ; then
     echo "WARNING - Inventory file is absent. Creating one with localhost."
     echo -e "[all]\nlocalhost" > /runner/inventory/hosts
 fi
@@ -60,16 +60,19 @@ fi
 # Check if the passwords or SSH private key have been provided. If none is
 # present, we raise a warning, but continue as the SSH private could be shipped
 # in the container image or overridden by the playbook/roles.
-if [ ! -f /runner/env/passwords && ! -f /runner/env/ssh_key ]; then
+if [ ! -f /runner/env/passwords && ! -f /runner/env/ssh_key ] ; then
     echo "WARNING - Both passwords and SSH private key file are absent."
 fi
 
-if [ "${PROJECT_TYPE}" == "git" ]; then
-    if [ -z ${PROJECT_URI} ]; then
+# Handle Git project type
+if [ "${PROJECT_TYPE}" == "git" ] ; then
+    # Check if PROJECT_URI is present
+    if [ -z ${PROJECT_URI} ] ; then
         echo "ERROR - PROJECT_URI not specified. It is mandatory for 'git'."
         exit 1
     fi
 
+    # Clone the Git repository in /runner/project
     echo "INFO - Cloning Git repository: ${PROJECT_URI}"
     git clone ${PROJECT_URI} /runner/project
     if [ $? != 0 ] ; then
@@ -79,7 +82,7 @@ if [ "${PROJECT_TYPE}" == "git" ]; then
 fi
 
 # Check if the specified playbook exists in /runner/project.
-if [ ! -f /runner/project/${RUNNER_PLAYBOOK} ]; then
+if [ ! -f /runner/project/${RUNNER_PLAYBOOK} ] ; then
     echo "ERROR - Playbook /runner/project/${RUNNER_PLAYBOOK} does not exist."
     exit 1
 fi
