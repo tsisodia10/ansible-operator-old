@@ -31,13 +31,9 @@ spec:
           spec:
             description: AnsiblePlaybookSpec defines the desired state of AnsiblePlaybook
             properties:
-              playbookConfigMap:
-                type: string
               playbookContent:
                 type: string
               playbookName:
-                type: string
-              playbookSecret:
                 type: string
               repository:
                 description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
