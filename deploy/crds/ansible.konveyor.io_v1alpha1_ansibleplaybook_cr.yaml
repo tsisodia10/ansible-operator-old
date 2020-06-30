@@ -1,5 +1,5 @@
-apiVersion: app.example.com/v1alpha1
-kind: AnsiblePlaybook
+apiVersion: ansible.konveyor.io/v1alpha1
+kind: ANsiblePlaybook
 metadata:
   name: example-ansibleplaybook
 spec:

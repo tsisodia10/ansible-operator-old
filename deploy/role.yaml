@@ -81,3 +81,16 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - ansible.konveyor.io
+  resources:
+  - '*'
+  - ansibleplaybookruns
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch

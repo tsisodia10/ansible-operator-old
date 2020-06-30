@@ -1,20 +1,21 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: ansibleplaybooks.app.example.com
+  name: ansibleplaybookruns.ansible.konveyor.io
 spec:
-  group: app.example.com
+  group: ansible.konveyor.io
   names:
-    kind: AnsiblePlaybook
-    listKind: AnsiblePlaybookList
-    plural: ansibleplaybooks
-    singular: ansibleplaybook
+    kind: AnsiblePlaybookRun
+    listKind: AnsiblePlaybookRunList
+    plural: ansibleplaybookruns
+    singular: ansibleplaybookrun
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: AnsiblePlaybook is the Schema for the ansibleplaybooks API
+        description: AnsiblePlaybookRun is the Schema for the ansibleplaybookruns
+          API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -29,27 +30,38 @@ spec:
           metadata:
             type: object
           spec:
-            description: AnsiblePlaybookSpec defines the desired state of AnsiblePlaybook
+            description: AnsiblePlaybookRunSpec defines the desired state of AnsiblePlaybookRun
             properties:
-              playbookContent:
-                type: string
-              playbookName:
-                type: string
-              repository:
+              ansiblePlaybook:
                 description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
                   Important: Run "operator-sdk generate k8s" to regenerate code after
                   modifying this file Add custom validation using kubebuilder tags:
                   https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
                 type: string
-              size:
-                type: integer
-              type:
+              extraVars:
                 type: string
-              url:
+              hostCredential:
+                type: string
+              inventory:
                 type: string
             type: object
           status:
-            description: AnsiblePlaybookStatus defines the observed state of AnsiblePlaybook
+            description: AnsiblePlaybookRunStatus defines the observed state of AnsiblePlaybookRun
+            properties:
+              active:
+                type: string
+              cleaning:
+                type: string
+              finished:
+                type: string
+              pending:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "operator-sdk generate k8s" to regenerate
+                  code after modifying this file Add custom validation using kubebuilder
+                  tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
+                type: string
+              preparing:
+                type: string
             type: object
         type: object
     served: true

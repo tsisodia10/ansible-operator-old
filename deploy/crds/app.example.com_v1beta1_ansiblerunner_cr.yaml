@@ -1,7 +1,0 @@
-apiVersion: app.example.com/v1beta1
-kind: AnsibleRunner
-metadata:
-  name: example-ansiblerunner
-spec:
-  # Add fields here
-  size: 3
