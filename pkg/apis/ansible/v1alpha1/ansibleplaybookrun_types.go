@@ -4,6 +4,17 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+const
+{
+   StatusPending "PENDING"
+   StatusPreparing "PREPARING"
+   StatusACtive "ACTIVE"
+   StatusCleaning "CLEANING"
+   StatusFinished "FINISHED"
+}
+
+
+
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
@@ -23,11 +34,7 @@ type AnsiblePlaybookRunStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-        Pending      string     `json:"pending,omitempty"`
-	Preparing    string     `json:"preparing,omitempty"`
-	Active       string     `json:"active,omitempty"`
-	Cleaning     string     `json:"cleaning,omitempty"`
-	Finished     string     `json:"finished,omitempty"`
+        Status       string     `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

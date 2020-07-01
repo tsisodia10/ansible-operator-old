@@ -87,9 +87,15 @@ func (r *ReconcileAnsiblePlaybookRun) Reconcile(request reconcile.Request) (reco
 	reqLogger.Info("Reconciling AnsiblePlaybookRun")
 
 	// Fetch the AnsiblePlaybookRun instance
-	instance := &ansiblev1alpha1.AnsiblePlaybookRun{}
+	instance := &ansiblev1alpha1.AnsiblePlaybook{}
+	instance1 := &ansiblev1alpha1.AnsiblePlaybookRun{}
+
+
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
+	instanceCreated := true
 	if err != nil {
+		err = r.client.Get(context.TODO(),request.NamespacedName,instance1)
+		if err!= nil{
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request.
 			// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
@@ -99,20 +105,20 @@ func (r *ReconcileAnsiblePlaybookRun) Reconcile(request reconcile.Request) (reco
 		// Error reading the object - requeue the request.
 		return reconcile.Result{}, err
 	}
-
+        instanceCreated = false
 	// Define a new Job object
-	job := newJobForCR(instance)
+	job := newJobForCR(instance1)
 
 	// Set AnsiblePlaybookRun instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, pod, r.scheme); err != nil {
+	if err := controllerutil.SetControllerReference(instance1, job, r.scheme); err != nil {
 		return reconcile.Result{}, err
 	}
 
-	// Check if this Pod already exists
-	found := &corev1.Pod{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, found)
+	// Check if this Job already exists
+	found := &v1beta.Job{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: job.Name, Namespace: job.Namespace}, found)
 	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
+		reqLogger.Info("Creating a new Job", "Job.Namespace", job.Namespace, "Job.Name", job.Name)
 		err = r.client.Create(context.TODO(), pod)
 		if err != nil {
 			return reconcile.Result{}, err
@@ -127,7 +133,22 @@ func (r *ReconcileAnsiblePlaybookRun) Reconcile(request reconcile.Request) (reco
 	// Pod already exists - don't requeue
 	reqLogger.Info("Skip reconcile: Pod already exists", "Pod.Namespace", found.Namespace, "Pod.Name", found.Name)
 	return reconcile.Result{}, nil
+
+
+	repoType := cr.Spec.repositoryType
+	repoURL := cr.Spec.repositoryURL
+
+	if repoType == "git"{
+	    if repoURL == “http” || repoURL == “https” || repoURL == ”ssh”
+             {
+                 return reconcile.Result{}, nil
+             }
+             reqLogger.Info("FAILED")
+
+       }
+
 }
+
 
 // newJobForCR returns an ansible-runner pod with the same name/namespace as the cr
 func newJobForCR(cr *ansiblev1alpha1.AnsiblePlaybookRun) *v1beta1.Job {
